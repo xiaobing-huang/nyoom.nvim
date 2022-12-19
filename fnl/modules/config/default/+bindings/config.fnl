@@ -1,8 +1,9 @@
 (import-macros {: nyoom-module-p! : map! : let!} :macros)
 (local {: autoload} (require :core.lib.autoload))
-(local {: setup} (autoload :leap)) 
-
+(local {: setup} (require :core.lib.setup))
+(local leap (autoload :leap))
 ;; Set leader to space by default
+
 (let! mapleader " ")
 
 (setup {:max_aot_targets nil
@@ -19,15 +20,22 @@
 (map! [o] :X "<Plug>(leap-backward-x)" {:desc "Leap Backward (x)"})
 
 ;; easier command line mode + 
-(map! [n] ";" ":" {:desc "vim-ex"})
 
+(map! [n] ";" ":" {:desc :vim-ex})
 ;; telescope
+
 (nyoom-module-p! telescope
-  (do
-    (map! [n] "<leader><space>" "<cmd>Telescope find_files<CR>" {:desc "Find Files"})
-    (map! [n] "<leader>bb" "<cmd>Telescope buffers<CR>" {:desc "Buffers"})
-    (map! [n] "<leader>:" "<cmd>Telescope commands<CR>" {:desc "M-x"})))
+                 (do
+                   (map! [n] :<leader><space> "<cmd>Telescope find_files<CR>"
+                         {:desc "Find Files"})
+                   (map! [n] :<leader>bb "<cmd>Telescope buffers<CR>"
+                         {:desc :Buffers})
+                   (map! [n] "<leader>:" "<cmd>Telescope commands<CR>"
+                         {:desc :M-x})))
 
 ;; calendar
+
 (nyoom-module-p! calendar
-  (map! [n] :<leader>oc "<cmd>Calendar -frame=space -google_calendar<CR>" {:desc "Open Google Calendar"}))
+                 (map! [n] :<leader>oc
+                       "<cmd>Calendar -frame=space -google_calendar<CR>"
+                       {:desc "Open Google Calendar"}))

@@ -1,22 +1,27 @@
-(import-macros {: nyoom-module-p! : packadd!} :macros)
+(import-macros {: nyoom-module-p!} :macros)
 (local {: autoload} (require :core.lib.autoload))
+(local {: deep-merge} (autoload :core.lib.tables))
 (local lsp (autoload :lspconfig))
+(local lsp-servers {})
 
 ;;; Improve UI
+
 (set vim.lsp.handlers.textDocument/signatureHelp
-      (vim.lsp.with vim.lsp.handlers.signature_help {:border :solid}))
+     (vim.lsp.with vim.lsp.handlers.signature_help {:border :solid}))
+
 (set vim.lsp.handlers.textDocument/hover
      (vim.lsp.with vim.lsp.handlers.hover {:border :solid}))
 
 (fn on-attach [client bufnr]
-  (import-macros {: buf-map! : autocmd! : augroup! : clear! : contains?} :macros)
-
+  (import-macros {: buf-map! : autocmd! : augroup! : clear!} :macros)
+  (local {: contains?} (autoload :core.lib))
   ;; Keybindings
   (local {:hover open-doc-float!
           :declaration goto-declaration!
           :definition goto-definition!
           :type_definition goto-type-definition!
           :code_action open-code-action-float!
+          :references goto-references!
           :rename rename!} vim.lsp.buf)
 
   (buf-map! [n] "K" open-doc-float!)
@@ -42,6 +47,7 @@
   ;;         {:buffer bufnr})))))
 
 ;; What should the lsp be demanded of?
+
 (local capabilities (vim.lsp.protocol.make_client_capabilities))
 (set capabilities.textDocument.completion.completionItem
      {:documentationFormat [:markdown :plaintext]
@@ -57,12 +63,20 @@
                                     :additionalTextEdits]}})
 
 ;;; Setup servers
+
 (local defaults {:on_attach on-attach
                  : capabilities
                  :flags {:debounce_text_changes 150}})
 
-;; conditional lsp servesr
-(local lsp-servers [])
+;; fennel-language-server
+;; (tset lsp-servers :fennel-language-server {})
+;; (tset (require :lspconfig.configs) :fennel-language-server
+;;       {:default_config {:cmd [:fennel-language-server]
+;;                         :filetypes [:fennel]
+;;                         :single_file_support true
+;;                         :root_dir (lsp.util.root_pattern :fnl)
+;;                         :settings {:fennel {:workspace {:library (vim.api.nvim_list_runtime_paths)}
+;;                                             :diagnostics {:globals [:vim]}}}}})
 
 ;; (nyoom-module-p! clojure
 ;;   (table.insert lsp-servers :clojure-lsp))
@@ -113,9 +127,6 @@
                                                        :preloadFileSize 10000}}}})
 
 ;; Load lsp
-(let [servers lsp-servers]
-  (each [_ server (ipairs servers)]
-    ((. (. lsp server) :setup) defaults)))
 
 ;; for trickier servers you can change up the defaults
 ;; (nyoom-module-p! lua
