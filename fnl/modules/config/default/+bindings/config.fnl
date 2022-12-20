@@ -6,19 +6,7 @@
 
 (let! mapleader " ")
 
-(setup {:max_aot_targets nil
-        :case_sensitive false
-        :character_classes [" \t\r\n"]})
-
-;; Regular Leap 
-(map! [nx] :s "<Plug>(leap-forward)" {:desc "Leap Forward"})
-(map! [nx] :S "<Plug>(leap-backward)" {:desc "Leap Backward"})
-(map! [o] :z "<Plug>(leap-forward)" {:desc "Leap Forward"})
-(map! [o] :Z "<Plug>(leap-backward)" {:desc "Leap Backward"})
-(map! [nxo] :gz "<Plug>(leap-cross-window)" {:desc "Leap Cross Window"})
-(map! [o] :x "<Plug>(leap-forward-x)" {:desc "Leap Forward (x)"})
-(map! [o] :X "<Plug>(leap-backward-x)" {:desc "Leap Backward (x)"})
-
+(leap.add_default_mappings)
 ;; easier command line mode + 
 
 (map! [n] ";" ":" {:desc :vim-ex})

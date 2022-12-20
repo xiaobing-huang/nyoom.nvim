@@ -23,28 +23,30 @@
           :code_action open-code-action-float!
           :references goto-references!
           :rename rename!} vim.lsp.buf)
-
-  (buf-map! [n] "K" open-doc-float!)
-  (buf-map! [nv] "<leader>ca" open-code-action-float!)
-  (buf-map! [nv] "<leader>cr" rename!)
-  (buf-map! [nv] "<leader>cf" vim.lsp.buf.format {:noremap true :silent true}))
-  ;; (buf-map! [n] "<leader>d" open-line-diag-float!))
-  ;; (buf-map! [n] "[d" goto-diag-prev!))
-  ;; (buf-map! [n] "]d" goto-diag-next!)
-  ;; (buf-map! [n] "<leader>gD" goto-declaration!)
-  ;; (buf-map! [n] "<leader>gd" goto-definition!)
-  ;; (buf-map! [n] "<leader>gt" goto-type-definition!)
-  
-
+  (buf-map! [n] :K open-doc-float!)
+  (buf-map! [nv] :<leader>ca open-code-action-float!)
+  (buf-map! [nv] :<leader>cr rename!)
+  (buf-map! [nv] :<leader>cf vim.lsp.buf.format {:noremap true :slient true})
+  (buf-map! [n] :<leader>gD goto-declaration!)
+  (buf-map! [n] :gD goto-declaration!)
+  (buf-map! [n] :<leader>gd goto-definition!)
+  (buf-map! [n] :gd goto-definition!)
+  (buf-map! [n] :<leader>gt goto-type-definition!)
+  (buf-map! [n] :gt goto-type-definition!)
+  (buf-map! [n] :<leader>gr goto-references!)
+  (buf-map! [n] :gr goto-references!)
   ;; Enable lsp formatting if available 
-  ;; (nyoom-module-p! format.+onsave
-  ;;   (when (client.supports_method "textDocument/formatting")
-  ;;     (augroup! lsp-format-before-saving
-  ;;       (clear! {:buffer bufnr})
-  ;;       (autocmd! BufWritePre <buffer>
-  ;;         '(vim.lsp.buf.format {:filter (fn [client] (not (contains? [:jsonls :tsserver] client.name)))
-  ;;                               :bufnr bufnr})
-  ;;         {:buffer bufnr})))))
+  (nyoom-module-p! format.+onsave
+                   (when (client.supports_method :textDocument/formatting)
+                     (augroup! lsp-format-before-saving
+                               (clear! {:buffer bufnr})
+                               (autocmd! BufWritePre <buffer>
+                                         `(vim.lsp.buf.format {:filter (fn [client]
+                                                                         (not (contains? [:jsonls
+                                                                                          :tsserver]
+                                                                                         client.name)))
+                                                               : bufnr})
+                                         {:buffer bufnr})))))
 
 ;; What should the lsp be demanded of?
 
@@ -78,67 +80,49 @@
 ;;                         :settings {:fennel {:workspace {:library (vim.api.nvim_list_runtime_paths)}
 ;;                                             :diagnostics {:globals [:vim]}}}}})
 
-;; (nyoom-module-p! clojure
-;;   (table.insert lsp-servers :clojure-lsp))
+;; conditional servers
 
-;; (nyoom-module-p! java
-;;   (table.insert lsp-servers :jdtls))
+(nyoom-module-p! clojure (tset lsp-servers :clojure_lsp {}))
 
-;; (nyoom-module-p! sh
-;;   (table.insert lsp-servers :bashls))
+(nyoom-module-p! java (tset lsp-servers :jdtls {}))
+(tset lsp-servers :jsonls {})
+(tset lsp-servers :lemminx {})
+;;(nyoom-module-p! json (tset lsp-servers :jsonls {}))
+;;(nyoom-module-p! xml (tset lsp-servers :lemminx {}))
 
-;; (nyoom-module-p! julia
-;;   (table.insert lsp-servers :julials))
+(nyoom-module-p! sh (tset lsp-servers :bashls {}))
 
-;; (nyoom-module-p! kotlin
-;;   (table.insert lsp-servers :kotlin_language_server))
+(nyoom-module-p! julia (tset lsp-servers :julials {}))
 
-;; (nyoom-module-p! latex
-;;   (table.insert lsp-servers :texlab))
+(nyoom-module-p! kotlin (tset lsp-servers :kotlin_langage_server {}))
 
-;; (nyoom-module-p! markdown
-;;   (table.insert lsp-servers :marksman))
+(nyoom-module-p! latex (tset lsp-servers :texlab {}))
 
-;; (nyoom-module-p! nim
-;;   (table.insert lsp-servers :nimls))
-;;
-;; (nyoom-module-p! nix
-;;   (table.insert lsp-servers :rnix))
-;;
-;; (nyoom-module-p! python
-;;   (table.insert lsp-servers :pyright))
+(nyoom-module-p! lua
+                 (tset lsp-servers :sumneko_lua
+                       {:settings {:Lua {:diagnostics {:globals [:vim]}
+                                         :workspace {:library (vim.api.nvim_list_runtime_paths)
+                                                     :maxPreload 100000}}}}))
 
-;; (nyoom-module-p! zig
-;;   (table.insert lsp-servers :zls))
+(nyoom-module-p! markdown (tset lsp-servers :marksman {}))
 
-(table.insert lsp-servers :lemminx)
-(table.insert lsp-servers :jsonls)
-(table.insert lsp-servers :awk_ls)
-(table.insert lsp-servers :clojure_lsp)
-(table.insert lsp-servers :bashls)
-  
-(lsp.sumneko_lua.setup {:on_attach on-attach
-                          : capabilities
-                          :settings {:Lua {:diagnostics {:globals {1 :vim}}
-                                           :workspace {:library {(vim.fn.expand :$VIMRUNTIME/lua) true
-                                                                 (vim.fn.expand :$VIMRUNTIME/lua/vim/lsp) true
-                                                                 (vim.fn.expand :$HOME/.hammerspoon/Spoons/EmmyLua.spoon/annotations) true}
-                                                       :maxPreload 100000
-                                                       :preloadFileSize 10000}}}})
+(nyoom-module-p! nim (tset lsp-servers :nimls {}))
+
+(nyoom-module-p! nix (tset lsp-servers :rnix {}))
+
+(nyoom-module-p! python
+                 (tset lsp-servers :pyright
+                       {:root_dir (lsp.util.root_pattern [:.flake8])
+                        :settings {:python {:analysis {:autoImportCompletions true
+                                                       :useLibraryCodeForTypes true
+                                                       :disableOrganizeImports false}}}}))
+
+(nyoom-module-p! zig (tset lsp-servers :zls {}))
 
 ;; Load lsp
 
-;; for trickier servers you can change up the defaults
-;; (nyoom-module-p! lua
-  ;; (lsp.sumneko_lua.setup {:on_attach on-attach
-  ;;                         : capabilities
-  ;;                         :settings {:Lua {:diagnostics {:globals {1 :vim}}
-  ;;                                          :workspace {:library {(vim.fn.expand :$VIMRUNTIME/lua) true
-  ;;                                                                (vim.fn.expand :$VIMRUNTIME/lua/vim/lsp) true}
-  ;;                                                      :maxPreload 100000
-  ;;                                                      :preloadFileSize 10000}}}}))
-;; (lsp.jsonls.setup {:get_root_dir "123"})
-;; (set lsp.jsonls.get_root_dir vim.loop.cwd)
-;; (print (vim.inspect lsp.jsonls))
+(let [servers lsp-servers]
+  (each [server server_config (pairs servers)]
+    ((. (. lsp server) :setup) (deep-merge defaults server_config))))
 
 {: on-attach}

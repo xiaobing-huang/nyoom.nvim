@@ -64,14 +64,14 @@
 ;; ---------------------
 ;; Put your plugins here
 ;; ---------------------
-;; (use-package! :folke/tokyonight.nvim)
+(use-package! :folke/tokyonight.nvim)
 (use-package! :phelipetls/jsonpath.nvim)
-(use-package! :numToStr/Comment.nvim {:config (fn []
-                                                (local {: setup } (require :Comment))
-                                                (setup))})
-(use-package! :kylechui/nvim-surround {:config (fn []
-                                                 (local {: setup} (require :nvim-surround))
-                                                 (setup))})
+;; (use-package! :numToStr/Comment.nvim {:config (fn []
+;;                                                 (local {: setup } (require :Comment))
+;;                                                 (setup))})
+;; (use-package! :kylechui/nvim-surround {:config (fn []
+;;                                                  (local {: setup} (require :nvim-surround))
+;;                                                  (setup))})
 (use-package! :luukvbaal/nnn.nvim {:config (fn []
                                              (local {: setup} (require :nnn))
                                              (setup))})

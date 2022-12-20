@@ -12,6 +12,7 @@
     (my_module.some_function \"some_arg\"))
   (assert (not= (autoload \"my_module\").some_function nil))
   ```"
+  ;;(print (vim.inspect name))
   (let [res {:nyoom/autoload-enabled? true :nyoom/autoload-module false}]
     (fn ensure []
       (if (. res :nyoom/autoload-module)
