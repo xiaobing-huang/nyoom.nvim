@@ -95,7 +95,7 @@ mysterious errors. When you do, here are some places you can look for help:
 environment.
 + Search [Nyoom's issue tracker](https://github.com/nyoom-engineering/nyoom.nvim/issues) in case your issue was already
 reported.
-+ Hop on [our Discord server](https://discord.gg/5R5DvQs9) ; it's active and friendly!
++ Hop on [our Discord server](https://discord.gg/M528tDKXRG) ; it's active and friendly!
 
 If you have an issue with a plugin in Nyoom.nvim, first you should report it here. Please don't bother package maintainers with issues that are caused by my configs, and vice versa.
 
