@@ -1,5 +1,4 @@
 (import-macros {: let!} :macros)
-;; optimizations
 
 (let [built-ins [:2html_plugin
                  :getscript
@@ -35,9 +34,20 @@
     (let [provider (.. :loaded_ v :_provider)]
       (let! provider 0))))
 
+;; add python provider and mason binaries
+
+(set vim.env.PATH (.. vim.env.PATH ":" (vim.fn.stdpath :data) :/mason/bin))
+
+(set vim.env.PATH (.. vim.env.PATH ":" (vim.fn.stdpath :config) :/bin))
+
+;; (let! python3_host_prog (if (executable? :python) (vim.fn.exepath :python)
+;;                             (executable? :python3) (vim.fn.exepath :python3)
+;;                             nil))
+
 ;; check for cli
 
 (local cli (os.getenv :NYOOM_CLI))
+
 ;; If its a cli instance, load package management
 ;; If its a regular instance, load defaults, userconfig and plugins
 
@@ -51,6 +61,7 @@
       (set! updatetime 250)
       (set! timeoutlen 400)
       ;; visual options
+      (set! conceallevel 2)
       (set! shortmess+ :sWcI)
       (set! signcolumn "yes:1")
       (set! formatoptions [:q :j])
@@ -83,27 +94,31 @@
           (do
             (set! diffopt+ "linematch:60")
             (set! splitkeep :screen)))
-      ;; load user's config
+      ;; gui options
+      (set! list)
+      (set! fillchars {:eob " "
+                       :vert " "
+                       :horiz " "
+                       :diff "╱"
+                       :foldclose ""
+                       :foldopen ""
+                       :fold " "
+                       :msgsep "─"})
+      (set! listchars {:tab " ──"
+                       :trail "·"
+                       :nbsp "␣"
+                       :precedes "«"
+                       :extends "»"})
+      (set! scrolloff 4)
+      (set! guifont "Liga SFMono Nerd Font:h14")
+      (let! neovide_padding_top 45)
+      (let! neovide_padding_left 38)
+      (let! neovide_padding_right 38)
+      (let! neovide_padding_bottom 20)
       (require :config)
       (require :packer_compiled)
-      ;; replace packer commands
 
       (fn replace-packer [command]
-        (fn nyoom-gui [command]
-          (local autoload (require :core.lib.autoload))
-          (local {: scan_dir} (autoload :plenary.scandir))
-          (local {: reload_module} (autoload :plenary.reload))
-          (require :packages)
-          ((. (require :packer) command))
-          (local files (scan_dir (vim.fn.stdpath :config)))
-          (each [_ filename (ipairs files)]
-            (when (= (filename:match "^.+(%..+)$") :.fnl)
-              (vim.cmd (.. "source " filename))))
-          (each [module _ (pairs package.loaded)]
-            (reload_module module))
-          (dofile vim.env.MYVIMRC)
-          (vim.notify "Nyoom Reloaded!"))
-
         (fn first-to-upper [str]
           (str:gsub "^%l" string.upper))
 
@@ -116,18 +131,10 @@
                                           {})
         (vim.api.nvim_create_user_command nyoom-command
                                           (fn []
-                                            (nyoom-gui command))
+                                            (require :packages)
+                                            ((. (require :packer) command)))
                                           {}))
 
-      (let [packer-commands [:install :update :compile :sync]]
+      (let [packer-commands [:install :update :compile :sync :status :lockfile]]
         (each [_ v (ipairs packer-commands)]
-          (replace-packer v)))
-      ;; load mason env
-      (set vim.env.PATH
-           (.. vim.env.PATH ":" (vim.fn.stdpath :data) :/mason/bin))
-      (set vim.env.PATH (.. vim.env.PATH ":" (vim.fn.stdpath :config) :/bin))
-      ;; load python providers
-      (let! python3_host_prog
-            (if (executable? :python) (vim.fn.exepath :python)
-                (executable? :python3) (vim.fn.exepath :python3)
-                nil))))
+          (replace-packer v)))))
