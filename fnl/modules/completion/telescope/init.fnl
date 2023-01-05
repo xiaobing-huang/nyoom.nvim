@@ -7,17 +7,8 @@
                :requires [(pack :nvim-telescope/telescope-project.nvim {:opt true})
                           (pack :nvim-telescope/telescope-ui-select.nvim {:opt true})
                           (pack :nvim-telescope/telescope-ghq.nvim {:opt true})
-                          (pack :jvgrootveld/telescope-zoxide {:opt true})
-                          (pack :nvim-telescope/telescope-media-files.nvim {:opt true})
-                          (pack :nvim-telescope/telescope-fzf-native.nvim {:opt true
-                                                                           :run :make})]})
-               :requires [(pack :nvim-telescope/telescope-ui-select.nvim
-                                {:opt true})
                           (pack :nvim-telescope/telescope-file-browser.nvim
                                 {:opt true})
-                          (pack :nvim-telescope/telescope-media-files.nvim
-                                {:opt true})
-                          (pack :nvim-telescope/telescope-project.nvim
-                                {:opt true})
                           (pack :LukasPietzschmann/telescope-tabs {:opt true})
-                          (pack :jvgrootveld/telescope-zoxide {:opt true})]})
+                          (pack :jvgrootveld/telescope-zoxide {:opt true})
+                          (pack :nvim-telescope/telescope-media-files.nvim {:opt true})]})

@@ -20,18 +20,16 @@
 ;; Load extensions
 
 (packadd! telescope-ui-select.nvim)
-(packadd! telescope-fzf-native.nvim)
 (packadd! telescope-ghq.nvim)
-
+(packadd! telescope-file-browser.nvim)
 (packadd! telescope-project.nvim)
+(packadd! telescope-tabs)
+
 (load_extension :project)
 (load_extension :ghq)
 (load_extension :ui-select)
-(packadd! telescope-file-browser.nvim)
 (load_extension :file_browser)
-(packadd! telescope-project.nvim)
 (load_extension :project)
-(packadd! telescope-tabs)
 (setup :telescope-tabs)
 
 ;; only install native if the flag is there
