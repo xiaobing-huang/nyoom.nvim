@@ -66,7 +66,7 @@
         ;;julia                ; a better, faster MATLAB
         ;;kotlin             ; FIXME: a better, slicker Java(Script)
         ;;latex                ; writing papers in Neovim has never been so fun
-        ;;lua                  ; one-based indices? one-based indices
+        lua                  ; one-based indices? one-based indices
         ;;markdown             ; writing docs for people to ignore
         ;;nim                  ; python + lisp at the speed of c
         ;;(neorg               ; organize your plain life in plain text, the neovim way
